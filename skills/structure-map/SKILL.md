@@ -5,11 +5,54 @@ description: Scan project and generate STRUCTURE.md hub + detail files (screens,
 
 You are a project structure documentation generator. Your job is to scan the current project and create a comprehensive `STRUCTURE.md` hub file + detail files that help AI coding assistants navigate the codebase without scanning everything.
 
-If the user says "regenerate", delete existing structure files and recreate from scratch. Otherwise, create or update them.
+## Step 0: Diff-aware Update
+
+If `STRUCTURE.md` already exists and the user did NOT say "regenerate":
+1. Read the existing `STRUCTURE.md` and detail files
+2. List all project files and compare against what's documented
+3. Identify changes: **added** files, **deleted** files, **renamed** files
+4. Determine which feature domains are affected by the changes
+5. Update ONLY the affected domains and their detail file entries
+6. Recalculate and update header counts (screens, routes, tables, services)
+7. Preserve any manual edits the user made to unaffected sections
+
+If the user says "regenerate", delete existing structure files and recreate everything from scratch.
+
+If `STRUCTURE.md` does not exist, proceed with a full generation (skip to Step 0.5).
+
+## Step 0.5: .gitignore-aware Scanning
+
+Before scanning any files, set up path exclusions:
+
+1. Read `.gitignore` if it exists and parse all ignore patterns
+2. Always exclude these directories regardless of `.gitignore`:
+   - `node_modules/`, `.dart_tool/`, `__pycache__/`, `.next/`, `.nuxt/`
+   - `build/`, `dist/`, `.build/`, `out/`, `.output/`
+   - `.cache/`, `coverage/`, `.nyc_output/`
+   - `vendor/`, `third_party/`, `deps/`
+   - `.git/`, `.svn/`
+   - `.claude/`, `.cursor/`, `.agent/`
+3. Skip binary files, lock files (`*.lock`, `package-lock.json`), and generated code directories
+4. Apply these exclusions to ALL subsequent scanning steps
 
 ## Step 1: Detect Tech Stack
 
 Scan the project root to identify:
+
+### Monorepo Detection
+
+First, check if the project is a monorepo:
+- Multiple `package.json` / `pubspec.yaml` / `go.mod` / `Cargo.toml` files at different levels
+- Workspace config files: `pnpm-workspace.yaml`, `lerna.json`, `nx.json`, `turbo.json`
+- Common monorepo directories: `apps/`, `packages/`, `services/`, `modules/`, `libs/`
+
+If monorepo detected:
+- Identify each sub-project and its root directory
+- Detect tech stack per sub-project independently
+- Each sub-project becomes its own feature domain (or set of domains)
+- In STRUCTURE.md, show each sub-project as a top-level section
+
+### Tech Stack Detection
 
 **Frontend framework** (check in order):
 - Flutter — `pubspec.yaml` contains `flutter`
@@ -111,6 +154,47 @@ Group related screens, API routes, tables, and services into logical feature dom
 
 Use naming patterns, import relationships, and file proximity to group items.
 
+### Dependency Graph (Import Analysis)
+
+Parse import/require statements across the codebase to strengthen domain grouping:
+
+1. For each screen file, identify which services it imports
+2. For each service file, identify which other services it uses
+3. Use import clusters to validate and refine domain groupings — files that import each other heavily likely belong to the same domain
+4. Detect **circular dependencies** — if Service A imports Service B and Service B imports Service A, flag this in the output
+5. Optionally include a "Key Dependencies" section per domain in STRUCTURE.md showing the most important cross-file relationships:
+
+```
+### Key Dependencies
+- `frmislemler.dart` → `api_client.dart`, `session_context.dart`
+- `islemler_rules.py` → `islemler_normalize.py`
+```
+
+## Step 7.5: Extract Navigation Flow
+
+Analyze router/navigator files to extract the app's navigation structure:
+
+| Framework | What to Parse |
+|---|---|
+| Flutter | `MaterialApp` routes map, `GoRouter` config, `Navigator.push` / `Navigator.pushNamed` calls, `onGenerateRoute` |
+| React/Next | `react-router` `<Route>` config, Next.js file-based `app/` or `pages/` directory structure |
+| Vue | `vue-router` config (typically `router/index.ts` or `router/index.js`) |
+| Angular | `app-routing.module.ts`, lazy-loaded route modules |
+| Svelte | SvelteKit file-based `src/routes/` directory structure |
+
+Generate an ASCII tree showing the navigation flow:
+
+```
+Login Screen
+  └─→ Main Screen (after auth)
+        ├─→ Screen A (from menu)
+        ├─→ Screen B (from menu)
+        │     └─→ Screen B Detail (on row tap)
+        └─→ Settings
+```
+
+Include this in the "Navigation Flow" section of STRUCTURE.md. If navigation cannot be reliably determined, note it as "Navigation flow could not be auto-detected — add manually."
+
 ## Step 8: Generate Output Files
 
 Create `docs/structure/` directory if it doesn't exist.
@@ -189,13 +273,12 @@ Only create if tables/models were found.
 - **Tables**: `Table1`, `Table2`
 - **Services**: `service1`
 - **Tests**: `test_file1`, `test_file2`
+- **Key Dependencies**: `file1` → `service1` → `Table1`
 
 ### 2. {Domain Name}
 ...
 
 ## Navigation Flow
-
-(If applicable — show main navigation paths like menu -> screens)
 
 ```
 Entry Point -> Main Screen
@@ -318,3 +401,6 @@ Run `$structure-map` again anytime to refresh.
 5. **Keep it concise** — STRUCTURE.md hub should be under 200 lines; details go in the detail files
 6. **Use relative paths** — all file paths in the output should be relative to the project root
 7. **Group intelligently** — feature domains should reflect how developers think about the project, not just alphabetical file listings
+8. **Respect .gitignore** — never index files or directories that are git-ignored or in the default exclusion list
+9. **Incremental by default** — prefer updating only changed sections over full regeneration
+10. **Flag issues** — report circular dependencies, orphan files (no imports/not imported), and other structural concerns

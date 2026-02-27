@@ -65,6 +65,14 @@ Copy `skills/structure-map/SKILL.md` to:
 
 </details>
 
+## Features
+
+- **Diff-aware Update** — Incrementally updates only changed domains instead of regenerating everything. Compares current files against documented state and patches the diff.
+- **Monorepo Support** — Detects Nx, Turborepo, Lerna, pnpm workspaces, and multi-package repos. Each sub-project gets its own domain section.
+- **Navigation Flow Extraction** — Parses router/navigator configs (Flutter GoRouter, react-router, vue-router, Angular routing, SvelteKit file-based routes) and generates an ASCII navigation tree.
+- **Dependency Graph** — Analyzes import/require statements to map screen→service→service relationships. Uses import clusters to validate domain groupings and flags circular dependencies.
+- **.gitignore-aware Scanning** — Respects `.gitignore` patterns and skips common non-source directories (`node_modules/`, `build/`, `dist/`, `__pycache__/`, `.dart_tool/`, `vendor/`, etc.).
+
 ## What It Generates
 
 When invoked in any project, the skill scans the codebase and creates:
