@@ -7,13 +7,13 @@ AI agent skill that scans your project and generates a `STRUCTURE.md` hub file +
 ### Via npx (recommended)
 
 ```bash
-npx skills add yusufayik/structure-map
+npx skills add aykyusuf/structure-map
 ```
 
 or
 
 ```bash
-npx add-skill yusufayik/structure-map
+npx add-skill aykyusuf/structure-map
 ```
 
 ### Manual Installation
