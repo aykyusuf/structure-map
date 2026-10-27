@@ -1,6 +1,6 @@
 {
   "name": "structure-map",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Deterministic project map for AI coding assistants: a dependency-free Node scanner writes screens, routes, tables, services, tests and modules as facts; the LLM only writes domain descriptions. Split-not-cut output, freshness hook, legacy migration.",
   "author": { "name": "aykyusuf" },
   "license": "MIT",
