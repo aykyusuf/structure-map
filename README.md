@@ -25,7 +25,7 @@ Requires Node >= 18 (macOS, Linux, Windows; no bash/jq needed).
 ```
 /structure-map:structure-map            # scan, describe uncovered paths, offer the pointer
 /structure-map:structure-map check      # freshness only, writes nothing
-/structure-map:structure-map regenerate # rebuild (asks first)
+/structure-map:structure-map regenerate # rebuild (deletes generated files only if it can ask you; otherwise keeps them)
 /structure-map:structure-map migrate    # convert an old-style STRUCTURE.md, keeping its descriptions
 ```
 (Installed as a plain skill, the command is `/structure-map`.) The script also runs standalone:
@@ -37,7 +37,8 @@ Requires Node >= 18 (macOS, Linux, Windows; no bash/jq needed).
 | `STRUCTURE.md` | script owns only the block between `<!-- structure-map:begin -->` and `<!-- structure-map:end -->`; the rest is yours |
 | `docs/structure/{screens,api-routes,db-tables,services,tests,modules,unresolved}.md` (+ `<name>/` parts when split) | script (do not edit) |
 | `docs/structure/domains.md` | LLM/you; the script creates it once and never rewrites it |
-| `.claude/rules/structure-map.md`, one line in an existing `AGENTS.md`, `.cursor/rules/structure-map.mdc` if `.cursor/rules/` exists | only after you confirm |
+| `.claude/rules/structure-map.md` (the 4-line pointer) | written automatically; it is the skill's own file, and a copy you edited by hand is left alone |
+| one line in an existing `AGENTS.md`, `.cursor/rules/structure-map.mdc` if `.cursor/rules/` exists, the two `.gitattributes` `merge=union` lines | only suggested in the final report, you add them by hand |
 
 Nothing else is created; `CLAUDE.md`/`AGENTS.md` are never created.
 
