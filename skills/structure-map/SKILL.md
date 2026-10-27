@@ -39,6 +39,7 @@ Then re-run the scanner with `--json`; repeat until `uncovered` and `gone` are e
 Read `references/pointer.md`. Write `.claude/rules/structure-map.md` with the pointer text, without asking: it is this skill's own file (create it if missing, overwrite it only when it is the skill's own text; leave a file the user changed by hand alone and say so). Do not touch any other file. List as suggestions in the final report, with the exact text, what the user may add by hand: the one-line `AGENTS.md` entry (only if AGENTS.md exists), `.cursor/rules/structure-map.mdc` (only if `.cursor/rules/` exists), and the two `.gitattributes` `merge=union` lines. Never create CLAUDE.md or AGENTS.md.
 
 ## 4. Report (final message)
+Refer to files by their path relative to the project root; never write an absolute path you did not read from a tool result. If a write was refused (for example `.claude/` in a non-interactive run), say so and give the exact text and relative target so the user can add it.
 Stack per sub-project; counts (screens, routes, events, tables, services, tests, unresolved); files written vs unchanged; split files; uncovered/gone before and after; whether the pointer was written; the suggestions; anything you could not describe. Keep it short.
 
 More: `references/notes.md` (coverage, limits, troubleshooting, other tools).
