@@ -1,0 +1,20 @@
+{
+  "description": "Keeps structure-map facts fresh. Only acts in projects that already have a STRUCTURE.md with structure-map markers; never creates a map; prints at most one line at SessionStart.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/structure-map/scripts/scan.mjs\" --hook", "timeout": 20 }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/skills/structure-map/scripts/scan.mjs\" --hook", "timeout": 20 }
+        ]
+      }
+    ]
+  }
+}

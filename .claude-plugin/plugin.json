@@ -1,0 +1,10 @@
+{
+  "name": "structure-map",
+  "version": "1.0.0",
+  "description": "Deterministic project map for AI coding assistants: a dependency-free Node scanner writes screens, routes, tables, services, tests and modules as facts; the LLM only writes domain descriptions. Split-not-cut output, freshness hook, legacy migration.",
+  "author": { "name": "aykyusuf" },
+  "license": "MIT",
+  "homepage": "https://github.com/aykyusuf/structure-map",
+  "repository": "https://github.com/aykyusuf/structure-map",
+  "keywords": ["structure", "codebase-map", "navigation", "documentation", "claude-code"]
+}

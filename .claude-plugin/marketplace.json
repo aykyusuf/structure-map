@@ -1,0 +1,16 @@
+{
+  "name": "structure-map",
+  "owner": { "name": "aykyusuf" },
+  "metadata": { "description": "structure-map plugin marketplace (single plugin)" },
+  "plugins": [
+    {
+      "name": "structure-map",
+      "source": "./",
+      "description": "Deterministic project map: script writes facts, the LLM writes domain descriptions.",
+      "version": "1.0.0",
+      "author": { "name": "aykyusuf" },
+      "license": "MIT",
+      "homepage": "https://github.com/aykyusuf/structure-map"
+    }
+  ]
+}
